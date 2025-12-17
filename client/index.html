@@ -1,0 +1,1995 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExBack Accelerator</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Configurações Globais --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #111827; /* Preto padrão */
+        }
+
+        /* --- Container Principal --- */
+        .container {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- Cabeçalho (Logo e Barra) --- */
+        header {
+            padding: 10px 0 0 0; 
+            text-align: center;
+            position: relative;
+            max-width: 520px;
+            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 20px;
+            box-sizing: border-box;
+        }
+        
+        #back-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            display: none;
+        }
+        
+        #back-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 0;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px; /* Barra fina */
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 0; /* Grudado na logo */
+        }
+
+        .progress-bar-filled {
+            width: 5%; /* Começa com 5% */
+            height: 100%;
+            background-color: #DC2626;
+            transition: width 0.7s ease-in-out;
+        }
+
+        /* --- Conteúdo Principal --- */
+        main {
+            text-align: center;
+            padding-bottom: 40px;
+        }
+        
+        /* ========================================
+           === CSS ETAPA 1 (INÍCIO) ===
+           ======================================== */
+        .headline {
+            font-size: 22px;
+            font-weight: 800;
+            color: #000000;
+            line-height: 1.3;
+            margin: 15px 0;
+        }
+        .headline .highlight-red { color: #DC2626; font-weight: 900; }
+        .chat-image-container {
+            border: 3px solid #DC2626;
+            border-radius: 12px;
+            overflow: hidden;
+            display: inline-block;
+            margin: 15px 0;
+            transition: transform 0.3s ease;
+            max-width: 300px;
+            width: 100%;
+        }
+        .chat-image-container:hover { transform: scale(1.05); }
+        .chat-image { width: 100%; height: auto; display: block; }
+        .sub-headline {
+            font-size: 16px;
+            line-height: 1.4;
+            color: #000000;
+            font-weight: 500;
+            margin: 20px 0;
+        }
+        .sub-headline strong { font-weight: 800; }
+        .cta-text {
+            font-size: 15px;
+            color: #000000;
+            font-weight: 500;
+            margin: 20px 0;
+        }
+        .cta-text strong { font-weight: 900; color: #000000; }
+        .cta-wrapper {
+            margin: 20px 0 30px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .cta-glow-container { position: relative; }
+
+        /* --- ANIMAÇÃO DE GLOW PULSANTE --- */
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); /* Verde translúcido */
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(22, 163, 74, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
+            }
+        }
+
+        .cta-button {
+            position: relative;
+            z-index: 10; /* Garante que fique acima */
+            background: linear-gradient(90deg, #16a34a, #0a903f);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 20px 62px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(11, 168, 74, 0.4);
+            text-align: center;
+            white-space: nowrap;
+            animation: pulse-glow 2s infinite;
+        }
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(11, 168, 74, 0.6);
+        }
+        #start-quiz-button {
+            padding: 20px 52px;
+        }
+        
+        .cta-glow-border {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 20px;
+            background: linear-gradient( 120deg, #4ade80, #16a34a, #059669, #16a34a, #4ade80 );
+            background-size: 300% 300%;
+            animation: border-spin 4s linear infinite;
+            z-index: 1;
+            filter: blur(10px);
+            pointer-events: none; /* Garante o clique no botão */
+        }
+        @keyframes border-spin {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .info-box-container { display: flex; flex-direction: column; gap: 15px; }
+        .info-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background-color: #f0fdf4;
+            border: 1px solid #4ade80;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: left;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .info-box .icon { font-size: 20px; line-height: 1; }
+        .info-box .text {
+            flex: 1;
+            margin: 0;
+            font-size: 14px;
+            color: #14532d;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        /* ========================================
+           === CSS ETAPAS 2-8 (QUIZ) ===
+           ======================================== */
+        
+        .quiz-question {
+            font-size: 20px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 64px;
+            line-height: 1.3;
+            color: #000000;
+            padding-top: 16px;
+        }
+        
+        .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            height: 60px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid #f87171;
+            background-color: #fef2f2;
+            border-radius: 6px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+        .quiz-option:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+        .quiz-option.selected { background-color: #ffffff; border-color: #dc2626; }
+        .quiz-option-radio {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #f87171;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .quiz-option.selected .quiz-option-radio { border-color: #dc2626; }
+        .quiz-option.selected .quiz-option-radio::after {
+            content: '\2713'; /* Símbolo ✓ */
+            display: block;
+            font-size: 18px;
+            font-weight: 900;
+            color: #dc2626;
+            line-height: 1;
+        }
+        .quiz-option-text {
+            font-weight: 600;
+            color: #000000;
+            font-size: 14px;
+            text-align: left;
+        }
+        
+        
+        /* ========================================
+           === CSS ETAPA 7 (FINAL / VENDA) ===
+           ======================================== */
+
+        #etapa-final {
+            text-align: left;
+            padding-top: 1.5rem;
+            color: #000000;
+        }
+        .ef-section {
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+        .pt-small {
+            padding-top: 0.75rem !important;
+        }
+        
+        .ef-section-gray {
+            background-color: #f9fafb;
+            border-radius: 8px;
+            padding: 1.5rem 1rem;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+        }
+
+        /* 1. Alerta Inicial */
+        .ef-alert {
+            text-align: center;
+            font-weight: 700;
+            color: #000000;
+            font-size: 16px;
+            background-color: #fef9c3;
+            border: 2px solid #fde047;
+            padding: 1rem;
+            border-radius: 12px;
+            white-space: nowrap;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+            50% { transform: scale(1.03); box-shadow: 0 0 10px 10px rgba(250, 204, 21, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+        }
+
+        /* 2. Título de Impacto */
+        .ef-hero-title {
+            font-size: 22px;
+            font-weight: 500;
+            text-align: center;
+            color: #111827;
+            line-height: 1.3;
+        }
+        .ef-hero-title strong {
+            font-weight: 800;
+            color: #111827;
+        }
+
+        /* 3. História (16PX) */
+        .ef-story {
+            font-size: 16px;
+            color: #000000;
+            line-height: 1.6;
+            text-align: left;
+        }
+        .ef-story p {
+            margin-top: 0;
+            margin-bottom: 0.7em; /* Um pouco mais de espaço entre parágrafos */
+        }
+        .ef-story .highlight-red {
+            color: #e11d48;
+            font-weight: 700;
+        }
+        .ef-story strong {
+            color: #111827;
+            font-weight: 800;
+        }
+        .ef-story .italic {
+            font-style: italic;
+        }
+        .ef-story .highlight-question {
+            font-style: italic;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .ef-story-questions {
+            list-style: none;
+            padding-left: 15px;
+            margin: 0.5em 0;
+            font-style: italic;
+            color: #000000;
+        }
+        
+        /* Imagens da História */
+        .ef-story-image {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin: 1.5rem auto;
+            display: block;
+        }
+
+        /* 7. Virada Emocional / Insight */
+        .ef-section-quote {
+            border-left: 3px solid #d62828;
+            padding-left: 1rem;
+            background-color: #f9fafb;
+        }
+
+        /* 9. Título da Comunidade */
+        .ef-community-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .ef-community-title .highlight-fire {
+            background: linear-gradient(90deg, #e11d48, #f87171, #e11d48);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: text-shine 3s linear infinite;
+            font-weight: 900;
+        }
+        @keyframes text-shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+        
+        /* 10. Carrossel de Depoimentos */
+        .ef-slider-container {
+            width: 100%;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 1px solid #e5e5e5;
+            position: relative;
+        }
+        
+        .ef-slider-track {
+            display: flex;
+            width: fit-content;
+            animation: marquee 30s linear infinite;
+        }
+        .ef-slider-track img {
+            height: 400px;
+            width: auto;
+            margin-right: 15px; /* Espaço entre imagens */
+            border-radius: 8px;
+        }
+        @keyframes marquee {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* Rola metade do track */
+        }
+        
+        /* 11. Transição CTA */
+        .ef-cta-transition {
+            font-size: 18px;
+            line-height: 1.7;
+        }
+        .ef-cta-transition .highlight-blink {
+            color: #000000;
+            font-weight: 700;
+            animation: glow 1.5s infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 5px rgba(225,29,72,0.5); }
+            to { text-shadow: 0 0 15px rgba(225,29,72,1); }
+        }
+
+        /* 12. CTA Final */
+        .ef-cta-pre-text {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            animation: pulse-black 2s infinite;
+        }
+        
+        @keyframes pulse-black {
+          0% {
+            transform: scale(1);
+            text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+          }
+          50% {
+            transform: scale(1.02);
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+          }
+          100% {
+            transform: scale(1);
+            text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+          }
+        }
+        
+        
+        /* ========================================
+           === CSS ETAPA 10 (LOADING) ===
+           ======================================== */
+        
+        #etapa-loading {
+            text-align: left;
+            padding-top: 1.5rem;
+        }
+        
+        .loading-title {
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            color: #111827;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        /* Ajuste do Contêiner do Vídeo para Tela Vertical Cheia */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #000;
+            padding-bottom: 177.77%; /* 9:16 (vertical) */
+            height: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .video-container {
+            position: absolute; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            object-fit: cover; /* Mantido para garantir o preenchimento total */
+        }
+        
+        .vimeo-click-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2; /* Cobre o iframe */
+        }
+        
+        .vimeo-controls {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .vimeo-custom-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        .vimeo-custom-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        .vimeo-custom-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+        
+        #volume-control-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 8px 5px 5px;
+            border-radius: 20px;
+        }
+        #volume-control-wrapper button {
+            width: 28px;
+            height: 28px;
+            padding: 4px;
+        }
+        
+        #volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 70px;
+            height: 4px;
+            background: #9a9a9a;
+            outline: none;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        #volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            border-radius: 50%;
+        }
+        #volume-slider::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            border-radius: 50%;
+        }
+        
+        
+        #protocol-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 1.5rem;
+        }
+        
+        .protocol-item {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;  
+        }
+        
+        .protocol-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;  
+            flex-basis: 80%;  
+        }
+        
+        .protocol-emoji {
+            font-size: 16px;
+            flex-shrink: 0;
+            line-height: 1.4;
+            margin-top: 1px;
+        }
+        
+        .protocol-text {
+            text-align: left;
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+        
+        .protocol-percent {
+            font-weight: 700;
+            font-size: 14px;
+            color: #dc2626;
+            flex-shrink: 0;
+            margin-left: 10px;
+            /* Adicionado: Para garantir que comece no valor correto antes da animação */
+            min-width: 40px; 
+            text-align: right;
+        }
+        
+        .loading-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .loading-bar-fill {
+            width: 0%; /* Começa em 0 */
+            height: 100%;
+            background-color: #dc2626;
+            border-radius: 5px;
+            transition: width 4s linear; /* 4s */
+        }
+        
+        
+        /* --- Rodapé --- */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            font-size: 12px;
+            color: #888;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        footer a {
+            color: #555;
+            text-decoration: underline;
+        }
+        
+        /* Rodapé Específico da Etapa Final */
+        .ef-footer {
+            text-align: center;
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 30px;
+        }
+        .ef-footer p {
+            margin: 0.25rem;
+        }
+        
+        /* ========================================
+           === CSS Bloco Final (Seu HTML) ===
+           ======================================== */
+        
+        .final-card{
+            background:#fff;
+            border-radius:14px;
+            padding: 0;
+            margin-top:22px;
+            line-height:1.45;
+            text-align: left;  
+            font-size: 15px !important;  
+           }
+
+          .final-card h2{
+            margin:4px 0 12px 0;
+            font-size:22px;
+            line-height:1.12;
+            color:#0f1724;
+          }
+
+          .quote-list{
+            margin:18px 0 0 0;
+            padding:0;
+            list-style:none;
+            display:grid;
+            gap:10px;
+          }
+
+          .quote-list li{
+            background:linear-gradient(90deg,#fff,#fbfbff);
+            border-radius:10px;
+            padding:12px 14px;
+            border:1px solid #f1f5f9;
+            color:#111827;
+            font-size:15px;
+          }
+
+          .final-protocol-generated {
+            text-align: center;
+            font-weight: 700;
+            color: #000000; /* PRETO */
+            font-size: 20px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+          }
+          
+        .final-protocol-resgate {
+           text-align: center;
+           font-size: 16px;
+           color: #6b7280; /* Cinza */
+           margin-top: 5px;
+           margin-bottom: 40px;  /* Aumentado de 0 para 40px */
+        }
+
+        /* --- NOVOS ESTILOS PARA OS BÔNUS --- */
+        .bonus-card {
+            background: #ffffff;
+            border: 2px solid #fca5a5; /* Borda vermelha clara */
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            box-sizing: border-box;
+            margin-bottom: 24px;
+        }
+
+        .bonus-alert {
+            background-color: #fee2e2; /* Rosa bem claro */
+            border-left: 3px solid #dc2626; /* Borda esquerda vermelha forte */
+            color: #dc2626;
+            font-size: 12px;  
+            font-weight: 800;
+            padding: 8px 10px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            display: inline-block; /* Ajusta ao conteúdo */
+            width: auto;
+            line-height: 1.4; /* Ajuste para 2 linhas */
+            text-align: left;
+        }
+
+        .bonus-header {
+            display: flex;
+            align-items: flex-start; /* Alinha topo */
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+
+        .bonus-icon-container {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: radial-gradient(circle at center, #ff4d4d, #b91c1c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 22px;
+            box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.3);
+        }
+
+        .bonus-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.3;
+            flex: 1;
+        }
+
+        .bonus-price-block {
+            margin-bottom: 10px;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #6b7280; /* Cinza */
+            font-size: 13px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .free-price {
+            color: #ef4444; /* Vermelho */
+            font-weight: 900;
+            font-size: 20px;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .bonus-desc {
+            font-size: 14px;
+            color: #374151; /* Cinza escuro */
+            line-height: 1.5;
+            margin: 0 0 16px 0;
+            font-weight: 600; /* Semi-negrito */
+        }
+
+        .bonus-footer {
+            border-top: 1px solid #f3f4f6;
+            padding-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bonus-tag {
+            font-size: 12px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #7c3aed, #d946ef);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .bonus-badge {
+            background: linear-gradient(90deg, #9333ea, #c026d3);
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+    </style>
+<script>
+  window.pixelId = "692393dbdefaba6535b716b9";
+  var a = document.createElement("script");
+  a.setAttribute("async", "");
+  a.setAttribute("defer", "");
+  a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+  document.head.appendChild(a);
+</script>
+</head>
+<body>
+
+    <header>
+        <button id="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path>
+            </svg>
+        </button>
+        
+        <img src="imagem/logo.png" alt="ExBack Accelerator Logo" class="logo">
+        
+        <div class="progress-bar-container">
+            <div class="progress-bar-filled" id="progress-bar"></div>
+        </div>
+    </header>
+
+    
+    <div class="container">
+
+        <main id="etapa-inicio">
+            <h1 class="headline">
+                ⬇️ Descubra como fazer sua ex sentir sua falta em <span class="highlight-red">60 segundos</span>
+            </h1>
+            <div class="chat-image-container">
+                <img src="imagem/printinicio.jpeg" alt="Exemplo de conversa" class="chat-image">
+            </div>
+            <p class="sub-headline">
+                Use essa mensagem <strong>psicológica secreta</strong> que faz o cérebro dela reagir emocionalmente mesmo que ela tenha te bloqueado, esteja com outro ou diga que “<strong>não sente mais nada por você</strong>”.
+            </p>
+            <p class="cta-text">
+                👇 Clique para liberar o protocolo e <strong>testar a mensagem agora</strong>
+            </p>
+            <div class="cta-wrapper">
+              <div class="cta-glow-container">
+                <div class="cta-glow-border"></div>
+                <button class="cta-button" id="start-quiz-button">
+                  QUERO RECONQUISTAR MINHA EX!
+                </button>
+              </div>
+            </div>
+            <div class="info-box-container">
+                <div class="info-box">
+                    <span class="icon">✅</span>
+                    <p class="text">Você também vai receber um plano personalizado para reverter o quadro da reconquista.</p>
+                </div>
+                <div class="info-box">
+                    <span class="icon">✅</span>
+                    <p class="text">Vai entender o erro invisível que faz 91% dos homens afastarem a mulher — e como corrigir em minutos.</p>
+                </div>
+                <div class="info-box">
+                    <span class="icon">✅</span>
+                    <p class="text">E vai descobrir o atalho psicológico que desperta o instinto de saudade nas próximas 48 horas.</p>
+                </div>
+            </div>
+        </main>
+
+        <main id="etapa-quiz-1" style="display: none;">
+            
+            <h1 class="quiz-question">Hoje, como está a sua relação com ela?</h1>
+            
+            <div class="quiz-options">
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">O contato esfriou e ela está distante</span>
+                </div>
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Ainda conversamos, mas algo claramente mudou</span>
+                </div>
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Quase não existe mais contato entre nós</span>
+                </div>
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Ela parece seguir a vida dela, e eu fiquei preso nisso</span>
+                </div>
+            </div>
+            
+        </main>
+
+        <main id="etapa-quiz-2" style="display: none;">
+            
+            <h1 class="quiz-question">Qual é a maior dificuldade quando você pensa em falar com ela?</h1>
+            
+            <div class="quiz-options">
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Não sei o que dizer sem afastar ainda mais</span>
+                </div>
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Tudo que falo parece não gerar impacto</span>
+                </div>
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Tenho medo de errar e perder qualquer chance</span>
+                </div>
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Sinto que qualquer atitude minha agora pode piorar</span>
+                </div>
+            </div>
+            
+        </main>
+        
+        <main id="etapa-quiz-3" style="display: none;">
+            
+            <h1 class="quiz-question">Se nada mudar agora, o que mais te preocupa?</h1>
+            
+            <div class="quiz-options">
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Ela criar conexão com outra pessoa</span>
+                </div>
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">A chance de reaproximação desaparecer</span>
+                </div>
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Me arrepender de não ter agido no momento certo</span>
+                </div>
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">O tempo passar e tornar qualquer tentativa inútil</span>
+                </div>
+            </div>
+            
+        </main>
+        
+        <main id="etapa-quiz-4" style="display: none;">
+            
+            <h1 class="quiz-question">Você gostaria de saber como agir da forma certa — sem implorar, sem pressão e sem cometer erros comuns?</h1>
+            
+            <div class="quiz-options">
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Sim, quero uma estratégia clara</span>
+                </div>
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Sim, quero saber exatamente o que evitar</span>
+                </div>
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Sim, quero aumentar minhas chances agora</span>
+                </div>
+                <div class="quiz-option">
+                    <div class="quiz-option-radio"></div>
+                    <span class="quiz-option-text">Sim, quero entender o melhor momento e a forma correta de agir</span>
+                </div>
+            </div>
+            
+        </main>
+        
+        <main id="etapa-final" style="display: none;">
+            
+            <div class="ef-section">
+                <h2 class="ef-alert">⚠️ ATENÇÃO! Não saia dessa página!</h2>
+            </div>
+            
+            <div class="ef-section pt-small">
+                <h1 class="ef-hero-title">
+                    Suas chances de voltar com sua<br>
+                    <strong>ex SÃO DE APENAS 12%</strong> — isso<br>
+                    é <strong>crítico</strong> — mas ao seguir esse<br>
+                    protocolo você pode <strong>GARANTIR</strong><br>
+                    que ela volte 🔽
+                </h1>
+            </div>
+
+            <div class="ef-section ef-story">
+                <p>Fala, irmão.</p>
+                <p>Meu nome é <strong>Mateus</strong>.</p>
+                <p>E, eu sei exatamente o que você está passando.</p>
+                <p>Te digo isso porque eu já estive do outro lado.</p>
+                <p>Eu era apaixonado por uma mulher... mas, com o passar do tempo, o relacionamento foi caindo na rotina.</p>
+                <p>Eu trabalhava demais, esquecia dos pequenos detalhes que faziam ela sorrir... e, sem perceber, fui <strong>magoando</strong> aos poucos a mulher que eu mais amava.</p>
+                <p>Até que, um dia, ela <span class="highlight-red">terminou comigo</span>.</p>
+                <p>E naquele momento, parecia o que o meu mundo tinha <strong>desabado</strong>.</p>
+            </div>
+            
+            <div class="ef-section ef-story">
+                <p>Foi aí que começou o meu verdadeiro <strong>inferno emocional</strong>.</p>
+                <p>Eu ligava sem parar… mandava mensagem atrás de mensagem…</p>
+                <p>Ficava online só pra ver se ela tinha visualizado.</p>
+                <p>Era uma mistura de <span class="highlight-red">desespero</span>, <strong>raiva</strong> e <strong>arrependimento</strong>.</p>
+                
+                <img src="imagem/ligacao.jpeg" alt="Print de ligações perdidas" class="ef-story-image">
+            </div>
+            
+            <div class="ef-section ef-story">
+                <p>Mas o pior era quando ela postava um story…</p>
+                <p>Eu imaginava logo que estava com <strong>outro</strong>. Aquilo me <span class="highlight-red">destruía</span> por dentro.</p>
+                <p><span class="italic">Ficava com o coração acelerado, as mãos suando, o peito apertado… E o pior — eu ainda estava <strong>bloqueado</strong>.</span></p>
+                
+                <img src="imagem/imagemblur.png" alt="Print de story borrado" class="ef-story-image">
+            </div>
+            
+            <div class="ef-section ef-story">
+                <p>Cheguei ao ponto de <strong>criar perfil fake</strong> pra ver o que ela postava… Pedia pros amigos me mandarem print do que ela andava fazendo…</p>
+                <p>E lá estava eu: <span class="highlight-red">chorando</span>, <strong>sem dormir</strong>, <strong>sem conseguir comer direito</strong>, vivendo cada dia como se o mundo tivesse acabado.</p>
+                <p class="highlight-question">A cabeça girava com as mesmas perguntas:</p>
+                
+                <ul class="ef-story-questions">
+                    <li>- Será que ela ainda pensa em mim?</li>
+                    <li>- Será que já está com outro?</li>
+                    <li>- Será que devo mandar mensagem?</li>
+                </ul>
+            </div>
+            
+            <div class="ef-section ef-section-quote">
+                <div class="ef-story">
+                    <p>Foi só depois de muito tempo que eu percebi uma <strong>verdade dura</strong>:</p>
+                    <p>👉 Quanto mais eu <span class="highlight-red">corria atrás</span>… <strong>mais ela se afastava</strong>.</p>
+                    <p>E não era porque ela não me amava mais. Era porque eu não entendia a <strong>mente feminina</strong>.</p>
+                    <p>Eu fazia tudo o que achava certo… Mas, sem perceber, estava afastando cada vez mais quem eu queria perto.</p>
+                </div>
+            </div>
+            
+            <div class="ef-section ef-story">
+                <p>Eu decidi que <strong>não podia mais viver assim</strong>.</p>
+                <p>Depois de meses vivendo naquele vazio, eu percebi que precisava <span class="highlight-red">mudar</span> — não por ela, mas <strong>por mim</strong>.</p>
+                <p>Comecei a entender o que realmente tinha dado errado. Descobri que o problema não era falta de amor, e sim <strong>falta de direção emocional</strong>. Eu tava tentando reconquistar alguém com as mesmas atitudes que tinham me feito perder.</p>
+                <p>Foi aí que tudo <span class="highlight-red">virou</span>.</p>
+                <p>Eu apliquei um <strong>novo tipo de comunicação</strong>… Mudei minha postura, minhas reações, o jeito como me posicionava. E pela primeira vez, <strong>ela começou a me notar de novo</strong>.</p>
+                <p>A gente voltou a conversar, de forma leve, natural. <span class="italic">Sem implorar, sem drama, sem joguinhos.</span> E aos poucos, ela foi se reaproximando — até que, finalmente, a gente voltou a se entender.</p>
+                <p>Mas o mais importante não foi o fato de ela ter voltado. <strong>Foi o que eu me tornei nesse processo.</strong></p>
+            </div>
+            
+            <div class="ef-section ef-section-gray ef-story">
+                <p>Mas eu não quis guardar isso só pra mim.</p>
+                <p>Comecei a conversar com outros caras que estavam passando pela mesma dor. A gente trocava experiências, testava novas atitudes, compartilhava resultados.</p>
+                <p>E foi assim que nasceu a comunidade que hoje chamo de</p>
+                <h3 class="ef-community-title">🔥 <span class="highlight-fire">“Códigos da Reconquista”</span></h3>
+                <p>Um espaço onde homens comuns, como eu e você, entendem o que realmente passa na cabeça de uma mulher e aprendem a <strong>recuperar o poder emocional</strong> que perderam depois do término.</p>
+            </div>
+            
+            <div class="ef-section">
+                <div class="ef-slider-container">
+                    <div class="ef-slider-track">
+                        <img src="imagem/depoimento1.png" alt="Depoimento 1">
+                        <img src="imagem/depoimento2.png" alt="Depoimento 2">
+                        <img src="imagem/depoimento3.png" alt="Depoimento 3">
+                        <img src="imagem/depoimento4.png" alt="Depoimento 4">
+                        <img src="imagem/depoimento1.png" alt="Depoimento 1">
+                        <img src="imagem/depoimento2.png" alt="Depoimento 2">
+                        <img src="imagem/depoimento3.png" alt="Depoimento 3">
+                        <img src="imagem/depoimento4.png" alt="Depoimento 4">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ef-section ef-story ef-cta-transition">
+                <p>Esses resultados <strong>não são sorte</strong>.</p>
+                <p>São fruto de aplicar as etapas certas, no momento certo.</p>
+                <p>A diferença é que eles decidiram <strong>agir</strong>.
+                    <br>
+                    Tu vai fazer o mesmo... <span class="highlight-blink">ou deixar outro ocupar o lugar que ainda é teu?</span>
+                </p>
+            </div>
+            
+            <div class="ef-section">
+                <p class="ef-cta-pre-text">👉 Toque no botão abaixo para
+                    <br>
+                    Avançar com o Plano!
+                </p>
+                
+                <div class="cta-wrapper" style="margin-bottom: 0;">
+                  <div class="cta-glow-container">
+                    <div class="cta-glow-border"></div>
+                    <button class="cta-button" id="final-cta-button">
+                      CONTINUAR PLANO!
+                    </button>
+                  </div>
+                </div>
+            </div>
+            
+            <footer class="ef-footer">
+                <p>© 2025 - Criado via Lunaris.online | Central de anúncios</p>
+                <p><i>*Resultados podem variar de pessoa para pessoa.</i></p>
+            </footer>
+            
+        </main>
+        
+        <main id="etapa-loading" style="display: none;">
+            
+            <h2 class="loading-title">Assista o vídeo abaixo enquanto criamos seu protocolo personalizado de reconquista.</h2>
+            
+            <div class="video-wrapper">
+                <div class="video-container">
+                    <iframe id="vimeo-player"
+                            src="https://player.vimeo.com/video/1136298066?controls=0&background=1&loop=1&title=0&byline=0&portrait=0&autoplay=0"  
+                            frameborder="0"  
+                            allow="autoplay; fullscreen; picture-in-picture"  
+                            allowfullscreen  
+                            title="VSL">
+                    </iframe>
+                </div>
+                <div class="vimeo-click-overlay"></div>
+                
+                <div class="vimeo-controls">
+                    <div id="volume-control-wrapper">
+                        <button class="vimeo-custom-btn" id="custom-volume-btn">
+                            <svg id="volume-off-icon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                            <svg id="volume-on-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 4.45v2.06c2.89.86 5 3.54 5 6.49s-2.11 5.63-5 6.49v2.06c4.01-.91 7-4.49 7-8.55s-2.99-7.64-7-8.55z"/></svg>
+                        </button>
+                        <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="1">
+                    </div>
+                    <button class="vimeo-custom-btn" id="custom-fullscreen-btn">
+                        <svg id="fullscreen-enter-icon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                        <svg id="fullscreen-exit-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <script src="https://player.vimeo.com/api/player.js"></script>
+
+            <h3 class="loading-title">Aguarde, estamos criando o seu Protocolo Personalizado de Reconquista...</h3>
+            
+            <div id="protocol-list">
+                <div class="protocol-item" style="display: none;">
+                    <div class="protocol-info">
+                        <span class="protocol-emoji">🔄</span>
+                        <span class="protocol-text">Gerando a mensagem exata que fura qualquer bloqueio e desperta saudade mesmo no silêncio</span>
+                    </div>
+                    <span class="protocol-percent">0%</span>
+                    <div class="loading-bar">
+                        <div class="loading-bar-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="protocol-item" style="display: none;">
+                    <div class="protocol-info">
+                        <span class="protocol-emoji">🔄</span>
+                        <span class="protocol-text">Criando o gatilho oculto que faz ela duvidar da decisão de te deixar</span>
+                    </div>
+                    <span class="protocol-percent">0%</span>
+                    <div class="loading-bar">
+                        <div class="loading-bar-fill"></div>
+                    </div>
+                </div>
+
+                <div class="protocol-item" style="display: none;">
+                    <div class="protocol-info">
+                        <span class="protocol-emoji">🔄</span>
+                        <span class="protocol-text">Gerando o plano de reaproximação que usa a culpa dela como força ao seu favor</span>
+                    </div>
+                    <span class="protocol-percent">0%</span>
+                    <div class="loading-bar">
+                        <div class="loading-bar-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="protocol-item" style="display: none;">
+                    <div class="protocol-info">
+                        <span class="protocol-emoji">🔄</span>
+                        <span class="protocol-text">Criando o roteiro emocional que transforma frieza em curiosidade e curiosidade em desejo</span>
+                    </div>
+                    <span class="protocol-percent">0%</span>
+                    <div class="loading-bar">
+                        <div class="loading-bar-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="protocol-item" style="display: none;">
+                    <div class="protocol-info">
+                        <span class="protocol-emoji">🔄</span>
+                        <span class="protocol-text">Gerando o texto perfeito pra reverter o desprezo e fazê-la procurar sua resposta</span>
+                    </div>
+                    <span class="protocol-percent">0%</span>
+                    <div class="loading-bar">
+                        <div class="loading-bar-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="protocol-item" style="display: none;">
+                    <div class="protocol-info">
+                        <span class="protocol-emoji">🔄</span>
+                        <span class="protocol-text">Criando o efeito dominó que destrói o novo relacionamento e traz o foco de volta pra você</span>
+                    </div>
+                    <span class="protocol-percent">0%</span>
+                    <div class="loading-bar">
+                        <div class="loading-bar-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="protocol-item" style="display: none;">
+                    <div class="protocol-info">
+                        <span class="protocol-emoji">🔄</span>
+                        <span class="protocol-text">Gerando a sequência proibida de mensagens que reabre a conversa sem parecer carência</span>
+                    </div>
+                    <span class="protocol-percent">0%</span>
+                    <div class="loading-bar">
+                        <div class="loading-bar-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="protocol-item" style="display: none;">
+                    <div class="protocol-info">
+                        <span class="protocol-emoji">🔄</span>
+                        <span class="protocol-text">Criando a virada psicológica que muda completamente a forma como ela te enxerga</span>
+                    </div>
+                    <span class="protocol-percent">0%</span>
+                    <div class="loading-bar">
+                        <div class="loading-bar-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="protocol-item" style="display: none;">
+                    <div class="protocol-info">
+                        <span class="protocol-emoji">🔄</span>
+                        <span class="protocol-text">Gerando Protocolo Personalizado!</span>
+                    </div>
+                    <span class="protocol-percent">0%</span>
+                    <div class="loading-bar">
+                        <div class="loading-bar-fill"></div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div id="reconquista-final-block" style="display: none;">
+                
+                <div class="final-protocol-generated">
+                    ✅ Protocolo Gerado!
+                </div>
+                <p class="final-protocol-resgate">Resgate agora... 👇</p>
+                
+                <div class="cta-wrapper" style="margin-bottom: 32px; margin-top: 8px;">
+                  <div class="cta-glow-container">
+                    <div class="cta-glow-border"></div>
+                    <a href="#CHECKOUT-URL" id="cta-reconquistar" class="cta-button"  
+                    style="text-decoration: none; padding: 18px 30px; text-transform: none; font-size: 15px;">
+                      Clique aqui para RECONQUISTAR sua ex!
+                    </a>
+                  </div>
+                </div>
+
+                <p class="final-guarantee-text"  
+                    style="margin-top: 32px; font-size: 20px; line-height: 1.35; font-weight: 400; text-align: center;">
+
+                    Ao garantir seu acesso ao <strong>CÓDIGO DA RECONQUISTA</strong><br>
+                    você recebe uma <strong>GARANTIA INQUEBRÁVEL</strong> de 90 dias<br>
+                    <span class="highlight-green-box"  
+                            style="background: #00ff00; padding: 0 6px; font-weight: 900;">
+                        +5 PRESENTES!
+                    </span>
+                    <span style="font-size: 22px; display: inline-block; margin-left: 4px;">⬇️</span>
+
+                </p>
+
+                <div class="final-card ef-story" style="margin-top: 20px;">
+                    
+                    <p>Ao entrar pro <strong>Código da Reconquista</strong>, você garante <strong>90 dias de segurança total</strong> pra testar tudo, do seu jeito —</p>
+                    
+                    <p>e ainda recebe <span class="highlight-red">4 presentes exclusivos</span>, entregues automaticamente assim que o seu acesso for liberado. 🎁</p>
+                    
+                    <p>E antes de continuar, deixa eu te perguntar algo:</p>
+                    
+                    <p><strong>Quantas vezes você já se fez essas perguntas? 🤔</strong></p>
+                    
+                    <div style="font-style: italic; color: #000000; margin: 15px 0;">
+                        <p>“E se eu tentar e nada mudar?”</p>
+                        <p>“E se ela não quiser mais voltar?”</p>
+                        <p>“E se for só mais uma promessa dessas que a gente vê por aí?”</p>
+                    </div>
+                    
+                    <p style="margin-top: 14px;">Eu entendo.</p>
+                    
+                    <p>Porque todo homem que chega até aqui já tentou sozinho antes —</p>
+                    
+                    <p>e se machucou tentando fazer certo. 💔</p>
+                    
+                    <p>Mas o que eu quero que você entenda é simples:</p>
+                    
+                    <p>✨ <strong>Você não precisa mais adivinhar o que fazer.</strong></p>
+                    
+                    <p>Eu não tô aqui pra te vender esperança.</p>
+                    
+                    <p>Tô aqui pra te mostrar um método que já fez milhares de mulheres olharem pro mesmo homem com outros olhos,</p>
+                    
+                    <p>depois que ele mudou o jeito de agir. 💬</p>
+                    
+                    <div class="ef-section-gray" style="margin-top: 15px; margin-bottom: 15px;">
+                        <p><strong>Funciona assim:</strong></p>
+                        
+                        <p>Você acessa o <strong>Código da Reconquista</strong> hoje,</p>
+                        
+                        <p>segue o passo a passo, aplica as mensagens e os comportamentos certos na ordem que eu te mostro.</p>
+                        
+                        <p>E se em até <strong>90 dias</strong> nada mudar — se ela não der nenhum sinal de reaproximação —</p>
+                        
+                        <p>eu devolvo <strong>100% do que você pagou</strong>.</p>
+                        
+                        <p>Sem burocracia. Sem explicação. Sem letras pequenas. 🧾</p>
+                    </div>
+                    
+                    <p>Eu faço isso porque sei o que ensino funciona —</p>
+                    
+                    <p>e porque já vi homens completamente perdidos voltarem a ser o centro da história da própria vida. 💪</p>
+                    
+                    <p>Você não tá comprando “um curso”.</p>
+                    
+                    <p>Você tá comprando <strong>uma segunda chance.</strong></p>
+                    
+                    <p>E eu coloco meu nome, minha palavra e minha reputação nisso. 🧠</p>
+                    
+                    <p style="margin-top: 12px;">Agora é contigo.</p>
+                    
+                    <p>Pode continuar rolando essa página e fingir que vai pensar mais um pouco... 😶</p>
+                    
+                    <p>Ou pode apertar o botão logo abaixo</p>
+                    
+                    <p>e começar hoje a se tornar o cara que ela vai olhar e pensar: “é ele.” ❤️‍🔥</p>
+                    
+                    <p style="margin-top: 12px;">A escolha é simples:</p>
+                    
+                    <p><strong style="color: #000; font-weight: 900;">💔 Continuar preso no mesmo ciclo que te afastou dela.</strong></p>
+                    
+                    <p><strong style="color: #000; font-weight: 900;">❤️ Ou agir agora, com o mesmo método que já ajudou mais de 30 mil homens a reconectar de verdade.</strong></p>
+
+                    <p style="text-align: center; margin-top: 24px; line-height: 1.3; font-size: 16px;">
+                        👉 Clique aqui e garanta seu acesso ao <strong>Código da Reconquista com 90 dias de garantia total. 🔒</strong>
+                    </p>
+
+                    <div class="cta-wrapper" style="margin-top: 32px; margin-bottom: 32px;">
+                      <div class="cta-glow-container">
+                        <div class="cta-glow-border"></div>
+                        <a href="#CHECKOUT-URL" id="cta-final-bottom" class="cta-button"
+                            style="text-decoration: none; padding: 18px 30px; text-transform: none; font-size: 15px;">
+                          Clique aqui para RECONQUISTAR sua ex!
+                        </a>
+                      </div>
+                    </div>
+                    
+                    <section style="font-family: 'Inter', sans-serif; background-color: #fff; padding: 60px 0 20px 0; color: #000; text-align: center; border-top: 1px solid #eee;">
+
+                        <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; color: #000000;">🎁 Seus 4 Presentes Especiais</h2>
+                        <p style="font-size: 1rem; color: #000000;">(Liberados apenas por 15 minutos ⏳)</p>
+                        <p style="max-width: 650px; margin: 20px auto 40px; line-height: 1.6; color: #000000; text-align: left;">
+                            Esses bônus foram criados pra acelerar sua reconquista e evitar os erros que te afastam ainda mais.  
+                            Eles funcionam como atalhos emocionais — pequenas ações que despertam reações reais nela, sem precisar forçar nada.
+                        </p>
+
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 30px; max-width: 1000px; margin: 0 auto;">
+
+                            <div class="bonus-card">
+                                <div class="bonus-alert">⚠️ DE R$ 147,00 POR R$ 0,00<br>SE VOCÊ AGIR EM 15 MINUTOS</div>
+                                <div class="bonus-header">
+                                    <div class="bonus-icon-container">📜</div>
+                                    <h3 class="bonus-title">O Dossiê da Reaproximação Silenciosa</h3>
+                                </div>
+                                <div class="bonus-price-block">
+                                    <span class="old-price">R$ 147,00</span>
+                                    <span class="free-price">GRÁTIS</span>
+                                </div>
+                                <p class="bonus-desc">
+                                    Descubra o que faz ela voltar a pensar em você sem que precise correr atrás.
+                                    Esse guia revela o que muda dentro da cabeça dela quando começa a sentir saudade —
+                                    e como acionar esse gatilho de forma leve e natural.
+                                </p>
+                                <div class="bonus-footer">
+                                    <span class="bonus-tag">🔥 Bônus Exclusivo</span>
+                                    <span class="bonus-badge">100% GRÁTIS</span>
+                                </div>
+                            </div>
+
+                            <div class="bonus-card">
+                                <div class="bonus-alert">⚠️ DE R$ 397,00 POR R$ 0,00<br>SE VOCÊ AGIR EM 15 MINUTOS</div>
+                                <div class="bonus-header">
+                                    <div class="bonus-icon-container">💌</div>
+                                    <h3 class="bonus-title">Scripts de Mensagens de Alta Dopamina</h3>
+                                </div>
+                                <div class="bonus-price-block">
+                                    <span class="old-price">R$ 397,00</span>
+                                    <span class="free-price">GRÁTIS</span>
+                                </div>
+                                <p class="bonus-desc">
+                                    Três mensagens reais, testadas em milhares de casos, que reativam memórias e curiosidade no cérebro feminino.
+                                    Cada uma tem um propósito: abrir o canal, provocar saudade e criar conexão emocional.
+                                </p>
+                                <div class="bonus-footer">
+                                    <span class="bonus-tag">🔥 Bônus Exclusivo</span>
+                                    <span class="bonus-badge">100% GRÁTIS</span>
+                                </div>
+                            </div>
+
+                            <div class="bonus-card">
+                                <div class="bonus-alert">⚠️ DE R$ 597,00 POR R$ 0,00<br>SE VOCÊ AGIR EM 15 MINUTOS</div>
+                                <div class="bonus-header">
+                                    <div class="bonus-icon-container">🎧</div>
+                                    <h3 class="bonus-title">Mini-Curso: Reaparecer sem ser Predador</h3>
+                                </div>
+                                <div class="bonus-price-block">
+                                    <span class="old-price">R$ 597,00</span>
+                                    <span class="free-price">GRÁTIS</span>
+                                </div>
+                                <p class="bonus-desc">
+                                    Um áudio rápido e direto que te ensina a reaparecer com postura, leveza e confiança.
+                                    Sem parecer carente. Sem parecer forçado. Muitos homens erram aqui — e esse mini-curso corrige isso em minutos.
+                                </p>
+                                <div class="bonus-footer">
+                                    <span class="bonus-tag">🔥 Bônus Exclusivo</span>
+                                    <span class="bonus-badge">100% GRÁTIS</span>
+                                </div>
+                            </div>
+
+                            <div class="bonus-card">
+                                <div class="bonus-alert">⚠️ DE R$ 137,00 POR R$ 0,00<br>SE VOCÊ AGIR EM 15 MINUTOS</div>
+                                <div class="bonus-header">
+                                    <div class="bonus-icon-container">💭</div>
+                                    <h3 class="bonus-title">A Mensagem que Faz Ela Lembrar de Você</h3>
+                                </div>
+                                <div class="bonus-price-block">
+                                    <span class="old-price">R$ 137,00</span>
+                                    <span class="free-price">GRÁTIS</span>
+                                </div>
+                                <p class="bonus-desc">
+                                    Uma sequência curta e emocional que desperta lembranças profundas
+                                    e ativa o instinto de saudade e curiosidade dentro dela.
+                                    São frases projetadas pra tocar o ponto certo da memória afetiva, sem pressão, sem joguinhos.
+                                </p>
+                                <div class="bonus-footer">
+                                    <span class="bonus-tag">🔥 Bônus Exclusivo</span>
+                                    <span class="bonus-badge">100% GRÁTIS</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div style="margin-top: 60px; text-align: center;">
+                            <p style="font-size: 1rem; color: #000000; line-height: 1.6; max-width: 650px; margin: 0 auto 25px;">
+                                Total de valor agregado: <strong>R$ 1.278,00</strong> — e tudo isso vem junto com seu acesso ao <strong>Código da Reconquista</strong>, agora.
+                                <br><br>
+                                Esses bônus ficam disponíveis por 15 minutos — depois disso, apenas o protocolo principal continua liberado.
+                            </p>
+                            
+                            <div style="background-color: #fee2e2; border: 2px solid #dc2626; color: #dc2626; font-weight: 800; padding: 12px 24px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; margin-bottom: 0; box-shadow: 0 4px 6px rgba(220, 38, 38, 0.1); width: auto; max-width: 100%; box-sizing: border-box; white-space: nowrap;">
+                                <span>⏳</span>
+                                <span>Faltam poucos minutos para o acesso expirar: <span id="countdown-display">15:00</span></span>
+                            </div>
+
+                            <div style="height: 50px; width: 100%;"></div>
+
+                            <div class="cta-wrapper" style="margin-top: 0px; margin-bottom: 16px;">
+                                <div class="cta-glow-container">
+                                    <div class="cta-glow-border"></div>
+                                    <a href="#CHECKOUT-URL" id="cta-presentes-bottom" class="cta-button"
+                                        style="text-decoration: none; padding: 18px 30px; text-transform: none; font-size: 15px;">
+                                        Clique aqui para RECONQUISTAR sua ex!
+                                    </a>
+                                </div>
+                              </div>
+                            
+                            <div style="text-align: center; margin-top: 50px; font-size: 19px; line-height: 1.5; color: #374151; padding: 0 10px;">
+                                Esses caras estavam <strong style="color: #000;">no mesmo barco que você,</strong> mas olha só o que aconteceu<br>
+                                depois que eles usaram o<br>
+                                <strong style="color: #000;">CÓDIGO DA RECONQUISTA 👇🏻👀</strong>
+                            </div>
+                            
+                            <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 15px; padding: 0 10px;">
+                                <img src="imagem/conversa1.jpeg" alt="Depoimento 1" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                <img src="imagem/conversa2.jpeg" alt="Depoimento 2" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                <img src="imagem/conversa 3.jpeg" alt="Depoimento 3" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                <img src="imagem/conversa 4.jpeg" alt="Depoimento 4" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            </div>
+                            <div style="text-align: left; margin-top: 30px; font-size: 16px; line-height: 1.6; color: #000000; padding: 0 10px;">
+                                E como você viu acima, os caras começam agradecendo pelos primeiros resultados…<br>
+                                mas o momento que mais marca é quando chega aquele <strong style="color: #000000; font-weight: 800;">print que todo mundo espera:</strong><br>
+                                <strong style="color: #000000; font-weight: 800;">a ex chamando por conta própria.</strong>
+                                
+                                <img src="imagem/2print.png" alt="Print ex chamando" style="width: 100%; margin-top: 20px; display: block;">
+                            </div>
+
+                            <div class="ef-story" style="margin-top: 40px; color: #000000; text-align: left;">
+
+                                <p>E aqui vem a parte que ninguém te conta…</p>
+                                <p>Esses caras que você viu agora há pouco?</p>
+                                <p>Eles estavam exatamente na mesma situação que você.</p>
+                            
+                                <div style="font-weight: 800; margin: 20px 0; line-height: 1.6;">
+                                    <p>👉 Bloqueados.</p>
+                                    <p>👉 Ignorados.</p>
+                                    <p>👉 Sem saber o que fazer.</p>
+                                    <p>👉 Com aquela mistura de arrependimento, frustração e medo de perder de vez.</p>
+                                </div>
+                            
+                                <p>Mas teve uma diferença:<br>
+                                Eles escolheram agir.<br>
+                                Eles decidiram parar de tentar “adivinhar” o que funciona…</p>
+                            
+                                <p>e seguir um protocolo que muda o jeito que a mente dela percebe você.<br>
+                                E quando fizeram isso, o efeito foi imediato:<br>
+                                Hoje, são eles que recebem mensagem primeiro.</p>
+                            
+                                <p>São eles que viram ela sentir falta.</p>
+                            
+                                <p>São eles que decidem se querem voltar — ou se agora é tarde demais pra ela.<br>
+                                E, no fundo, tudo começou com uma única escolha:<br>
+                                Ativar o poder de reprogramar a forma como ela te enxerga, com o Código da Reconquista.</p>
+                            
+                                <p>E você pode escolher isso agora.</p>
+                            
+                                <div class="cta-wrapper" style="margin-top: 32px; margin-bottom: 32px;">
+                                    <div class="cta-glow-container">
+                                        <div class="cta-glow-border"></div>
+                                        <a href="#CHECKOUT-URL" class="cta-button final-cta-link" style="text-decoration: none; padding: 18px 30px; text-transform: none; font-size: 15px;">
+                                            Clique aqui para RECONQUISTAR sua ex!
+                                        </a>
+                                    </div>
+                                </div>
+                            
+                                <p>Porque, se você chegou até aqui, não foi por acaso.<br>
+                                É porque você sabe que alguma coisa mudou…<br>
+                                e que ela já não te vê mais como antes.</p>
+                            
+                                <p>E agora só restam dois caminhos:</p>
+                                
+                                <p>❌ Continuar mandando mensagens aleatórias, torcendo pra ela responder — enquanto ela vive a vida sem você.</p>
+                                <p>✅ Ou aplicar as mensagens e comportamentos cirúrgicos do protocolo, que reacendem desejo, conexão e interesse de forma natural.</p>
+                            
+                                <p>O Código da Reconquista te mostra exatamente:</p>
+                            
+                                <div style="font-weight: 800; margin: 20px 0; line-height: 1.6;">
+                                    <p>👉 O que dizer.</p>
+                                    <p>👉 Quando dizer.</p>
+                                    <p>👉 E como despertar aquela sensação que faz ela pensar em você sem perceber.</p>
+                                </div>
+                            
+                                <p>Aperte o botão abaixo.</p>
+                            
+                                <p>Desbloqueie seu acesso.<br>
+                                E reassuma o seu lugar — no centro dos pensamentos dela.</p>
+                            
+                                <div class="cta-wrapper" style="margin-top: 32px; margin-bottom: 32px;">
+                                    <div class="cta-glow-container">
+                                        <div class="cta-glow-border"></div>
+                                        <a href="#CHECKOUT-URL" class="cta-button final-cta-link" style="text-decoration: none; padding: 18px 30px; text-transform: none; font-size: 15px;">
+                                            Clique aqui para RECONQUISTAR sua ex!
+                                        </a>
+                                    </div>
+                                </div>
+                            
+                            </div>
+                        </div>
+
+                    </section>
+                    </div>
+                </div>
+            
+        </main>
+        
+    </div>
+    
+    <footer id="footer-padrao">
+        <p>
+            <a href="#">Política de Privacidade</a> | <a href="#">Termos de Uso</a>
+        </p>
+        <p>© 2025 · Criado Via Lunaris.online</p>
+    </footer>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        
+        // --- 1. Elementos ---
+        const startButton = document.getElementById('start-quiz-button');
+        const backButton = document.getElementById('back-button');
+        const progressBar = document.getElementById('progress-bar');
+        
+        // Botões CTA
+        const ctaReconquistar = document.getElementById('cta-reconquistar');
+        const ctaFinalBottom = document.getElementById('cta-final-bottom');
+        const ctaPresentesBottom = document.getElementById('cta-presentes-bottom');
+        const finalCtaButton = document.getElementById('final-cta-button');
+        
+        // Etapas
+        const etapas = {
+          inicio: document.getElementById('etapa-inicio'),
+          quiz1: document.getElementById('etapa-quiz-1'),
+          quiz2: document.getElementById('etapa-quiz-2'),
+          quiz3: document.getElementById('etapa-quiz-3'),
+          quiz4: document.getElementById('etapa-quiz-4'),
+          final: document.getElementById('etapa-final'),
+          loading: document.getElementById('etapa-loading')
+        };
+        
+        // Opções
+        const options = {
+          quiz1: document.querySelectorAll('#etapa-quiz-1 .quiz-option'),
+          quiz2: document.querySelectorAll('#etapa-quiz-2 .quiz-option'),
+          quiz3: document.querySelectorAll('#etapa-quiz-3 .quiz-option'),
+          quiz4: document.querySelectorAll('#etapa-quiz-4 .quiz-option')
+        };
+        
+        // Vimeo e outros
+        const footerPadrao = document.getElementById('footer-padrao');
+        const reconquistaBlock = document.getElementById('reconquista-final-block');
+        const vimeoWrapper = document.querySelector('.video-wrapper');
+        const vimeoIframe = document.getElementById('vimeo-player');
+        const fullscreenBtn = document.getElementById('custom-fullscreen-btn');
+        const fullscreenEnterIcon = document.getElementById('fullscreen-enter-icon');
+        const fullscreenExitIcon = document.getElementById('fullscreen-exit-icon');
+        const volumeBtn = document.getElementById('custom-volume-btn');
+        const volumeOnIcon = document.getElementById('volume-on-icon');
+        const volumeOffIcon = document.getElementById('volume-off-icon');
+        const volumeSlider = document.getElementById('volume-slider');
+        
+        let etapaAtual = 'inicio';
+        let vimeoPlayer;
+        let isMuted = false;
+        let countdownInterval;
+        let currentProgressInterval; // Novo intervalo para a animação da porcentagem
+
+        // --- 2. Funções de Navegação ---
+
+        function hideAll() {
+            for(let key in etapas) {
+                if(etapas[key]) etapas[key].style.display = 'none';
+            }
+            if(footerPadrao) footerPadrao.style.display = 'none';
+        }
+
+        function showStep(stepName, progress, showBack = true) {
+            hideAll();
+            if(etapas[stepName]) etapas[stepName].style.display = 'block';
+            if(footerPadrao) footerPadrao.style.display = 'block';
+            
+            etapaAtual = stepName;
+            if(progressBar) progressBar.style.width = progress;
+            
+            if(backButton) {
+                backButton.style.display = showBack ? 'block' : 'none';
+            }
+            window.scrollTo(0,0);
+        }
+
+        // Navegação Específica
+        const navigate = {
+            toQuiz1: () => showStep('quiz1', '11.1%', true),
+            toQuiz2: () => showStep('quiz2', '22.2%', true),
+            toQuiz3: () => showStep('quiz3', '33.3%', true),
+            toQuiz4: () => showStep('quiz4', '44.4%', true),
+            toFinal: () => showStep('final', '66.6%', true), // Texto de Vendas Intermediário
+            toLoading: () => {
+                showStep('loading', '100%', true);
+                initVideo();       // Inicializa o Player
+                playVideo();       // Dá Play agora que estamos na tela
+                initLoadingBar();  // Começa a barra de progresso
+            },
+            toInicio: () => {
+                showStep('inicio', '5%', false);
+                // Reset selections
+                for(let key in options) {
+                    options[key].forEach(opt => opt.classList.remove('selected'));
+                }
+            }
+        };
+
+        // --- 3. Lógica de Vídeo e Loading ---
+
+        function initVideo() {
+            // Cria a instância do player se não existir
+            if (!vimeoPlayer && typeof Vimeo !== 'undefined') {
+                vimeoPlayer = new Vimeo.Player(vimeoIframe);
+                
+                // Configurações iniciais (volume, etc)
+                vimeoPlayer.ready().then(() => {
+                    vimeoPlayer.setVolume(1);
+                    isMuted = false;
+                    updateVolumeIcons();
+                    if(volumeSlider) volumeSlider.value = 1;
+                });
+            } 
+        }
+
+        function playVideo() {
+            if (vimeoPlayer) {
+                vimeoPlayer.ready().then(() => {
+                    vimeoPlayer.setCurrentTime(0); // Reinicia o vídeo do começo
+                    vimeoPlayer.play().catch(function(error) {
+                        console.log("Autoplay bloqueado pelo navegador, usuário precisa interagir.");
+                    });
+                });
+            }
+        }
+
+        function pauseVideo() {
+            if (vimeoPlayer) {
+                vimeoPlayer.pause();
+            }
+        }
+        
+        /**
+         * NOVO CÓDIGO: Gerencia a animação da barra e da porcentagem em cada item.
+         */
+        async function initLoadingBar() {
+            const items = document.querySelectorAll('#protocol-list .protocol-item');
+            
+            // 1. Resetar barras e porcentagens e limpar o intervalo de progresso
+            clearInterval(currentProgressInterval);
+            items.forEach(item => {
+                const bar = item.querySelector('.loading-bar-fill');
+                const percent = item.querySelector('.protocol-percent');
+                if(bar) { bar.style.transition = 'none'; bar.style.width = '0%'; }
+                if(percent) { percent.textContent = '0%'; } // Define o texto inicial como 0%
+                item.style.display = 'none';
+            });
+            if(reconquistaBlock) reconquistaBlock.style.display = 'none';
+
+            const animationDurationMs = 4000; // Duração definida no CSS (4s)
+
+            // 2. Animar cada item sequencialmente
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                const bar = item.querySelector('.loading-bar-fill');
+                const percentElement = item.querySelector('.protocol-percent');
+                
+                item.style.display = 'flex';
+                
+                if (bar) {
+                    // Pequeno atraso para permitir que a transição seja registrada
+                    await new Promise(r => setTimeout(r, 20)); 
+                    
+                    // Iniciar a animação da barra
+                    bar.style.transition = `width ${animationDurationMs / 1000}s linear`;
+                    bar.style.width = '100%';
+                    
+                    // 🚀 FUNÇÃO PARA ATUALIZAR A PORCENTAGEM DE 0 A 100
+                    let currentPercent = 0;
+                    const startTime = Date.now();
+                    const endTime = startTime + animationDurationMs;
+
+                    currentProgressInterval = setInterval(() => {
+                        const now = Date.now();
+                        const elapsed = now - startTime;
+                        
+                        // Calcula a porcentagem baseada no tempo decorrido
+                        if (now < endTime) {
+                            currentPercent = Math.min(100, Math.floor((elapsed / animationDurationMs) * 100));
+                        } else {
+                            currentPercent = 100;
+                            clearInterval(currentProgressInterval);
+                        }
+
+                        // Atualiza o texto
+                        if (percentElement) {
+                            percentElement.textContent = `${currentPercent}%`;
+                        }
+
+                        // Se atingiu 100% no último item, limpa e prossegue.
+                        if (currentPercent === 100 && i === items.length - 1) {
+                            clearInterval(currentProgressInterval);
+                        }
+                    }, 50); // Intervalo de 50ms para uma animação suave
+
+                    // Espera a duração total da animação para prosseguir para o próximo item
+                    await new Promise(r => setTimeout(r, animationDurationMs + 100));
+                }
+            }
+            
+            // 3. Finaliza a exibição
+            if(reconquistaBlock) reconquistaBlock.style.display = 'block';
+            startCountdown();
+        }
+
+        // --- 4. Cronômetro ---
+
+        function startTimer(duration, display) {
+            let timer = duration, minutes, seconds;
+            clearInterval(countdownInterval);  
+            countdownInterval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    timer = 0;
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+        }
+
+        function startCountdown() {
+            const fifteenMinutes = 60 * 15;
+            const display = document.querySelector('#countdown-display');
+            if(display) startTimer(fifteenMinutes, display);
+        }
+
+        // --- 5. Event Listeners ---
+
+        // Botão Iniciar
+        if(startButton) startButton.addEventListener('click', navigate.toQuiz1);
+
+        // Botões de Opção (Quiz)
+        function setupOptions(optionList, nextStepFunc) {
+            if(!optionList) return;
+            optionList.forEach(option => {
+                option.addEventListener('click', function() {
+                    optionList.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    setTimeout(nextStepFunc, 400);
+                });
+            });
+        }
+
+        setupOptions(options.quiz1, navigate.toQuiz2);
+        setupOptions(options.quiz2, navigate.toQuiz3);
+        setupOptions(options.quiz3, navigate.toQuiz4);
+        setupOptions(options.quiz4, navigate.toFinal);
+
+        // Botões CTA Intermediários e Finais
+        const handleCtaClick = (e) => {
+            e.preventDefault();
+            window.location.href = '#CHECKOUT-URL';  
+        };
+
+        if(finalCtaButton) finalCtaButton.addEventListener('click', navigate.toLoading); // Vai para a etapa de loading
+        if(ctaReconquistar) ctaReconquistar.addEventListener('click', handleCtaClick);
+        if(ctaFinalBottom) ctaFinalBottom.addEventListener('click', handleCtaClick);
+        if(ctaPresentesBottom) ctaPresentesBottom.addEventListener('click', handleCtaClick);
+
+        // Adicionar funcionalidade aos NOVOS botões do roteiro final
+        const finalLinks = document.querySelectorAll('.final-cta-link');
+        finalLinks.forEach(btn => {
+            btn.addEventListener('click', handleCtaClick);
+        });
+
+
+        // Botão Voltar
+        if(backButton) {
+            backButton.addEventListener('click', () => {
+                if (etapaAtual === 'quiz1') navigate.toInicio();
+                else if (etapaAtual === 'quiz2') navigate.toQuiz1();
+                else if (etapaAtual === 'quiz3') navigate.toQuiz2();
+                else if (etapaAtual === 'quiz4') navigate.toQuiz3();
+                else if (etapaAtual === 'final') navigate.toQuiz4();
+                else if (etapaAtual === 'loading') {
+                    pauseVideo(); // PAUSA O VÍDEO AO SAIR DA TELA
+                    clearInterval(currentProgressInterval); // Limpa o intervalo de porcentagem
+                    navigate.toFinal();
+                }
+            });
+        }
+
+        // Controles de Vídeo (Volume e Fullscreen)
+        if(fullscreenBtn && vimeoWrapper) {
+            fullscreenBtn.addEventListener('click', () => {
+                if (document.fullscreenElement) document.exitFullscreen();
+                else vimeoWrapper.requestFullscreen();
+            });
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                if(fullscreenEnterIcon) fullscreenEnterIcon.style.display = 'none';
+                if(fullscreenExitIcon) fullscreenExitIcon.style.display = 'block';
+            } else {
+                if(fullscreenEnterIcon) fullscreenEnterIcon.style.display = 'block';
+                if(fullscreenExitIcon) fullscreenExitIcon.style.display = 'none';
+            }
+        });
+
+        if(volumeBtn && volumeSlider) {
+            volumeBtn.addEventListener('click', () => {
+                if (!vimeoPlayer) return;
+                if (isMuted) {
+                    vimeoPlayer.setVolume(1);
+                    volumeSlider.value = 1;
+                    isMuted = false;
+                } else {
+                    vimeoPlayer.setVolume(0);
+                    volumeSlider.value = 0;
+                    isMuted = true;
+                }
+                updateVolumeIcons();
+            });
+
+            volumeSlider.addEventListener('input', (e) => {
+                if (!vimeoPlayer) return;
+                const val = e.target.value;
+                vimeoPlayer.setVolume(val);
+                isMuted = (val == 0);
+                updateVolumeIcons();
+            });
+        }
+
+        function updateVolumeIcons() {
+            if(volumeOnIcon && volumeOffIcon) {
+                if (isMuted) {
+                    volumeOnIcon.style.display = 'none';
+                    volumeOffIcon.style.display = 'block';
+                } else {
+                    volumeOnIcon.style.display = 'block';
+                    volumeOffIcon.style.display = 'none';
+                }
+            }
+        }
+
+      });
+    </script>
+
+</body>
+</html>
